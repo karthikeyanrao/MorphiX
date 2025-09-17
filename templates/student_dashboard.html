@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - Campus Live{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Student Dashboard</h1>
+        <p>Stay updated with campus information and vote on your favorite facilities</p>
+    </div>
+    
+    <div class="student-info-card">
+        <div class="student-info">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>Your Student Access</h3>
+            <p>As a student, you can view all campus updates and vote on facilities. Use your votes to help other students find the best places on campus!</p>
+        </div>
+    </div>
+    
+    <div class="voting-guide">
+        <h3><i class="fas fa-info-circle"></i> How to Use Your Votes</h3>
+        <div class="guide-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Browse Facilities</h4>
+                    <p>View all campus facilities and their current status</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Check Status</h4>
+                    <p>See crowd levels, availability, and queue information</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Vote</h4>
+                    <p>Click the fire icon to vote for your favorite facilities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .student-info-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #3b82f6;
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .student-info i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .student-info h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .student-info p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .voting-guide {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-xl);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .voting-guide h3 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .step-number {
+            background: var(--primary-color);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .guide-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %} 

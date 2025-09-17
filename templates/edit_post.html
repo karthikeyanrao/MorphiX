@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Post - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <div class="page-header" style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+            <div>
+                <h1><i class="fas fa-edit"></i> Edit Post</h1>
+                <p>Update the post details below</p>
+            </div>
+            <button id="deleteBtn" class="button button-secondary" style="border-color: var(--danger-color); color: var(--danger-color);">
+                <i class="fas fa-trash"></i> Delete Post
+            </button>
+        </div>
+        
+        {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <form action="/edit_post/{{ post.id }}" method="post">
+            <div class="form-group">
+                <label for="name">Title</label>
+                <input type="text" id="name" name="name" required value="{{ post.name }}" placeholder="Enter title">
+            </div>
+            
+            <div class="form-group">
+                <label for="content">Description</label>
+                <textarea id="content" name="content" rows="5" placeholder="Describe the post">{{ post.content or '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url">Image URL</label>
+                <input type="url" id="image_url" name="image_url" value="{{ post.image_url or '' }}" placeholder="https://example.com/image.jpg">
+            </div>
+            
+            <div class="form-actions" style="display:flex; gap:0.75rem; justify-content:flex-end;">
+                <a href="/" class="button button-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+                <button type="submit" class="button"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const deleteBtn = document.getElementById('deleteBtn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function () {
+                if (confirm('Are you sure you want to permanently delete this post? This cannot be undone.')) {
+                    fetch('/delete_resource/{{ post.id }}', { method: 'POST' })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = '/';
+                            } else {
+                                alert(data.error || 'Failed to delete post');
+                            }
+                        })
+                        .catch(() => alert('Failed to delete post'));
+                }
+            });
+        }
+    </script>
+{% endblock %} 

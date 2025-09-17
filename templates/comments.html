@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Comments - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+  <div class="form-container" style="max-width: 800px;">
+    <div class="page-header" style="display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+      <div>
+        <h1>Comments</h1>
+        {% if post %}
+          <p style="color: var(--text-secondary);">For: <strong>{{ post.name or (post.content[:40] ~ ('...' if post.content|length>40 else '')) }}</strong></p>
+        {% endif %}
+      </div>
+      <a href="/" class="button button-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post">
+      <div class="form-group">
+        <label for="comment">Add a comment</label>
+        <input type="text" id="comment" name="comment" placeholder="Write a comment..." required>
+      </div>
+      <div class="form-actions" style="justify-content:flex-end;">
+        <button type="submit" class="button"><i class="fas fa-paper-plane"></i> Post Comment</button>
+      </div>
+    </form>
+
+    <div style="margin-top: 1.5rem;">
+      {% if comments %}
+        {% for c in comments %}
+          <div class="post-card" style="padding: 0.75rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <i class="fas fa-comment" style="color: var(--text-secondary);"></i>
+                <strong>Comment</strong>
+              </div>
+              <span style="color: var(--text-secondary); font-size: 0.85rem;">{{ c.created_at }}</span>
+            </div>
+            <p style="margin-top: 6px;">{{ c.status_message }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color: var(--text-secondary);">No comments yet. Be the first to comment!</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

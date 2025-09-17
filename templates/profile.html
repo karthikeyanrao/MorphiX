@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <div class="page-header">
+            <h1>User Profile</h1>
+            <p>Manage your account information</p>
+        </div>
+        
+        <div class="profile-main">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="fas fa-{% if session.get('user_role') == 'faculty' %}chalkboard-teacher{% elif session.get('user_role') == 'admin' %}crown{% else %}graduation-cap{% endif %}" style="font-size: 4rem; color: var(--primary-color);"></i>
+                    </div>
+                    
+                    <div class="profile-basic-info">
+                        <h2>{{ session.get('full_name', session['username']) }}</h2>
+                        <p class="profile-email">{{ session['username'] }}</p>
+                        <div class="profile-badge">
+                            <i class="fas fa-{% if session.get('user_role') == 'faculty' %}chalkboard-teacher{% elif session.get('user_role') == 'admin' %}crown{% else %}graduation-cap{% endif %}"></i>
+                            {{ session.get('user_role', 'student').title() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-card">
+                <h3 style="margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fas fa-list"></i> My Posts
+                </h3>
+                {% if my_posts %}
+                    <div class="posts-container" style="margin:0;">
+                        {% for p in my_posts %}
+                            <div class="post-card">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <strong>{{ p.name or (p.content[:32] ~ ('...' if p.content|length>32 else '')) }}</strong>
+                                    <a href="/edit_post/{{ p.id }}" class="header-edit-btn"><i class="fas fa-pen"></i> Edit</a>
+                                </div>
+                                {% if p.content %}
+                                    <p style="margin-top:6px; color: var(--text-secondary);">{{ p.content }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="color: var(--text-secondary);">You haven't created any posts yet.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="/" class="button">
+                <i class="fas fa-home"></i> Back to Dashboard
+            </a>
+            <button onclick="toggleEditForm()" class="button button-secondary">
+                <i class="fas fa-user-edit"></i> Edit Profile
+            </button>
+            <a href="/create_post" class="button button-secondary">
+                <i class="fas fa-plus"></i> Create Post
+            </a>
+        </div>
+        
+        <!-- Edit Profile Form (unchanged) -->
+        <div id="editForm" class="edit-form-container" style="display: none;">
+            <div class="edit-form-header">
+                <h3><i class="fas fa-edit"></i> Edit Profile</h3>
+                <button onclick="toggleEditForm()" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form action="/update_profile" method="post" class="edit-form">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ session.get('full_name', '') }}" required placeholder="Enter your full name">
+                </div>
+                {% if session.get('user_role') == 'student' %}
+                    <div class="form-group">
+                        <label for="student_id">Student ID / Roll Number</label>
+                        <input type="text" id="student_id" name="student_id" value="{{ session.get('student_id', '') }}" placeholder="Enter your student ID or roll number">
+                    </div>
+                {% elif session.get('user_role') == 'faculty' %}
+                    <div class="form-group">
+                        <label for="faculty_id">Faculty ID</label>
+                        <input type="text" id="faculty_id" name="faculty_id" value="{{ session.get('faculty_id', '') }}" placeholder="Enter your faculty ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department" value="{{ session.get('department', '') }}" placeholder="Enter your department">
+                    </div>
+                {% endif %}
+                <div class="form-actions">
+                    <button type="button" onclick="toggleEditForm()" class="button button-secondary"><i class="fas fa-times"></i> Cancel</button>
+                    <button type="submit" class="button"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function toggleEditForm() {
+            const editForm = document.getElementById('editForm');
+            if (editForm.style.display === 'none') {
+                editForm.style.display = 'block';
+                editForm.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                editForm.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

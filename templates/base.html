@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Campus Live Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                Campus Live
+            </a>
+            
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Home</a>
+                <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+                
+                {% if session['username'] %}
+                    <a href="/create_post"><i class="fas fa-plus"></i> Create Post</a>
+                    <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+                    {% if session.get('is_admin') %}
+                        <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="nav-user">
+                {% if session['username'] %}
+                    <span class="welcome">
+                        <i class="fas fa-{% if session.get('user_role') == 'faculty' %}chalkboard-teacher{% elif session.get('user_role') == 'admin' %}crown{% else %}graduation-cap{% endif %}"></i>
+                        {{ session.get('full_name', session['username']) }}
+                        <small>({{ session.get('user_role', 'student').title() }})</small>
+                    </span>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                {% else %}
+                    <a href="/login" class="button button-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="/register" class="button">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

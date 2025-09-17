@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <div class="page-header">
+            <h1>Create Account</h1>
+            <p>Join the Campus Live community</p>
+        </div>
+        
+        {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <form action="/register" method="post">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="Enter your email address">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Create a strong password" minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required 
+                       placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="role">I am a:</label>
+                <select id="role" name="role" required>
+                    <option value="">Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty Member</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="student_fields" style="display: none;">
+                <label for="student_id">Student ID</label>
+                <input type="text" id="student_id" name="student_id" 
+                       placeholder="Enter your student ID">
+            </div>
+            
+            <div class="form-group" id="faculty_fields" style="display: none;">
+                <label for="faculty_id">Faculty ID</label>
+                <input type="text" id="faculty_id" name="faculty_id" 
+                       placeholder="Enter your faculty ID">
+                       
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" 
+                       placeholder="Enter your department">
+            </div>
+            
+            <button type="submit" class="button" style="width: 100%;">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // Show/hide role-specific fields
+        document.getElementById('role').addEventListener('change', function() {
+            const role = this.value;
+            const studentFields = document.getElementById('student_fields');
+            const facultyFields = document.getElementById('faculty_fields');
+            
+            // Hide all fields first
+            studentFields.style.display = 'none';
+            facultyFields.style.display = 'none';
+            
+            // Show relevant fields
+            if (role === 'student') {
+                studentFields.style.display = 'block';
+                document.getElementById('student_id').required = true;
+                document.getElementById('faculty_id').required = false;
+                document.getElementById('department').required = false;
+            } else if (role === 'faculty') {
+                facultyFields.style.display = 'block';
+                document.getElementById('faculty_id').required = true;
+                document.getElementById('department').required = true;
+                document.getElementById('student_id').required = false;
+            } else {
+                document.getElementById('student_id').required = false;
+                document.getElementById('faculty_id').required = false;
+                document.getElementById('department').required = false;
+            }
+        });
+    </script>
+{% endblock %}

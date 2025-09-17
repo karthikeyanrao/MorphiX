@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Post - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <div class="page-header">
+            <h1>Create New Post</h1>
+            <p>Share campus updates and facility information</p>
+        </div>
+        
+        <!-- Form updated to support file upload -->
+        <form action="/create_post" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Post Title</label>
+                <input type="text" id="title" name="title" required 
+                       placeholder="Enter post title (e.g., Campus Canteen)">
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required 
+                          placeholder="Describe the facility or update..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_file">Upload Image (optional)</label>
+                <input type="file" id="image_file" name="image_file" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label for="crowd">Crowd Level</label>
+                <select id="crowd" name="crowd" required>
+                    <option value="">Select crowd level</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Very High">Very High</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="importance">Importance</label>
+                <select id="importance" name="importance" required>
+                    <option value="">Select importance</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="queue">Queue Length</label>
+                <select id="queue" name="queue" required>
+                    <option value="">Select queue length</option>
+                    <option value="No Queue">No Queue</option>
+                    <option value="Short">Short (1-5 people)</option>
+                    <option value="Medium">Medium (6-15 people)</option>
+                    <option value="Long">Long (16+ people)</option>
+                    <option value="N/A">Not Applicable</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="button" style="width: 100%;">
+                <i class="fas fa-plus"></i> Create Post
+            </button>
+        </form>
+    </div>
+{% endblock %}

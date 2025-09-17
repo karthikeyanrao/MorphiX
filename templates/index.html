@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Campus Live Dashboard{% endblock %}
+
+{% block content %}
+    <div class="dashboard-header">
+        <div>
+            <h1><i class="fas fa-university"></i> Campus Live Dashboard</h1>
+            <p>Real-time updates on campus resources and facilities</p>
+        </div>
+        <div class="header-actions">
+            {% if session['username'] %}
+                <a href="/create_post" class="button small">
+                    <i class="fas fa-plus"></i> Add Post
+                </a>
+            {% else %}
+                <a href="/login" class="button small button-secondary">
+                    <i class="fas fa-sign-in-alt"></i> Login to Post
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="posts-container">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <div class="author-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="author-meta">
+                                <strong class="author-name">{{ post.author_name or 'Campus Member' }}</strong>
+                                <span class="post-title">{{ post.name }}</span>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            {% if post.importance %}
+                                <span class="importance-badge">
+                                    <i class="fas fa-star"></i> {{ post.importance }}
+                                </span>
+                            {% endif %}
+                            {% if post.can_edit %}
+                                <a href="/edit_post/{{ post.id }}" class="header-edit-btn" title="Edit Post">
+                                    <i class="fas fa-pen"></i> Edit
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if post.content %}
+                        <div class="post-description">
+                            <p>{{ post.content }}</p>
+                        </div>
+                    {% endif %}
+
+                    {% if post.image_url %}
+                        <div class="post-image">
+                            <img src="{{ post.image_url }}" alt="{{ post.name }}">
+                        </div>
+                    {% endif %}
+
+                    {% if post.latest_status %}
+                        <div class="status-update info-box">
+                            <h4 class="info-box-title"><i class="fas fa-info-circle"></i> Latest Update</h4>
+                            <p>{{ post.latest_status.status_message }}</p>
+                            <div class="status-details">
+                                {% if post.latest_status.crowd_level %}
+                                    <span class="status-chip"><i class="fas fa-users"></i> Crowd: {{ post.latest_status.crowd_level }}</span>
+                                {% endif %}
+                                {% if post.latest_status.queue_length %}
+                                    <span class="status-chip"><i class="fas fa-clock"></i> Queue: {{ post.latest_status.queue_length }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="post-actions">
+                        <button onclick="upvoteResource('{{ post.id }}', this)" class="action-btn upvote-btn">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span class="count">{{ post.upvotes_count }}</span>
+                        </button>
+
+                        <a href="/comments/{{ post.id }}" class="action-btn comment-btn" style="text-decoration:none;">
+                            <i class="fas fa-comment"></i>
+                            <span class="count">{{ post.comments_count }}</span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>No resources available</h3>
+                <p>Be the first to add a campus resource!</p>
+                {% if session['username'] %}
+                    <a href="/create_post" class="button mt-2">
+                        <i class="fas fa-plus"></i> Create First Resource
+                    </a>
+                {% else %}
+                    <a href="/login" class="button mt-2 button-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Login to Post
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function upvoteResource(resourceId, button) {
+            fetch('/upvote_resource', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ resource_id: resourceId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const countSpan = button.querySelector('.count');
+                    countSpan.textContent = data.upvotes_count;
+
+                    if (data.action === 'upvoted') {
+                        button.classList.add('upvoted');
+                    } else {
+                        button.classList.remove('upvoted');
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

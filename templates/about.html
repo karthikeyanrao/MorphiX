@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}About - Campus Live Dashboard{% endblock %}
+
+{% block content %}
+  <div class="form-container" style="max-width: 1000px;">
+    <div class="page-header" style="margin-bottom: 2rem;">
+      <h1>Campus Live Dashboard</h1>
+      <p>Your real-time window into campus resources and updates</p>
+    </div>
+
+    <div class="info-box" style="border-radius: var(--border-radius-xl); box-shadow: var(--shadow-md);">
+      <div style="display:flex; gap:1.5rem; flex-wrap:wrap; align-items:center;">
+        <div style="flex:1; min-width: 260px;">
+          <h3 style="margin-bottom:0.5rem;">What is it?</h3>
+          <p>
+            Campus Live Dashboard helps students and faculty share timely information about canteens,
+            libraries, labs, events and other facilities. See crowd levels, queue times and important
+            notices at a glance so you can plan your day better.
+          </p>
+        </div>
+        <div style="flex:1; min-width: 260px;">
+          <img src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop" alt="Campus" style="width:100%; border-radius: var(--border-radius);">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-top: 1.5rem;">
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-bolt"></i> Live Updates</h4>
+        <p>Quickly check crowd levels, queue length and importance for places across campus.</p>
+      </div>
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-users"></i> Community Driven</h4>
+        <p>Students and faculty contribute updates and vote to surface the most helpful posts.</p>
+      </div>
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-image"></i> Photo Uploads</h4>
+        <p>Add images to posts for better context. Images are stored securely in Supabase Storage.</p>
+      </div>
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-lock"></i> Secure & Simple</h4>
+        <p>Authentication is powered by Supabase Auth; only owners can edit their posts.</p>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:1.5rem;">
+      <h3 class="info-box-title"><i class="fas fa-cogs"></i> How it works</h3>
+      <ol style="margin-left: 1.25rem;">
+        <li>Login or register</li>
+        <li>Create a post with title, description and optional photo</li>
+        <li>Add live status: Crowd, Queue and Importance</li>
+        <li>Vote and comment to help others</li>
+      </ol>
+    </div>
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-top:1.5rem;">
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-server"></i> Backend</h4>
+        <p>Flask app with Supabase (Postgres, Auth, Storage) for data and files.</p>
+      </div>
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-desktop"></i> Frontend</h4>
+        <p>Jinja templates with a clean, responsive design and rich UI components.</p>
+      </div>
+      <div class="info-box">
+        <h4 class="info-box-title"><i class="fas fa-rocket"></i> Purpose</h4>
+        <p>Save time, avoid crowds, and keep the campus community informed in real time.</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
