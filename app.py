@@ -10,6 +10,7 @@ supabase_key = Config.SUPABASE_KEY
 
 supabase: Client = create_client(supabase_url, supabase_key)
 
+
 def save_sb_session(auth_session):
     if not auth_session:
         return
@@ -18,6 +19,7 @@ def save_sb_session(auth_session):
     # Supabase returns expires_in (seconds)
     expires_at = datetime.now(timezone.utc) + timedelta(seconds=auth_session.expires_in)
     session['sb_expires_at'] = expires_at.timestamp()
+
 
 def ensure_sb_session():
     # If no tokens, not logged in
@@ -35,6 +37,18 @@ def ensure_sb_session():
             print(f"Supabase refresh failed: {e}")
             return False
     return True
+
+
+def set_client_session_from_flask():
+    """Ensure the supabase client carries the user's auth for Storage/DB policies."""
+    access = session.get('sb_access')
+    refresh = session.get('sb_refresh')
+    if access and refresh:
+        try:
+            supabase.auth.set_session(access, refresh)
+        except Exception as e:
+            print(f"set_session failed: {e}")
+
 
 def fetch_posts():
     try:
@@ -350,20 +364,28 @@ def create_post():
         # If an image file is provided, upload to Supabase Storage and get public URL
         if image_file and image_file.filename:
             try:
+                # ensure client has user session (for RLS/policies on storage)
+                set_client_session_from_flask()
                 ext = os.path.splitext(image_file.filename)[1].lower() or '.jpg'
                 file_key = f"posts/{uuid4()}{ext}"
-                # Upload file bytes with content type
-                _ = supabase.storage.from_('images').upload(
+                image_bytes = image_file.read()
+                # Upload file bytes with correct contentType and upsert
+                upload_resp = supabase.storage.from_('images').upload(
                     file_key,
-                    image_file.read(),
-                    {"content-type": image_file.mimetype or "image/jpeg"}
+                    image_bytes,
+                    {"contentType": image_file.mimetype or "image/jpeg", "upsert": True}
                 )
-                # Retrieve public URL from the bucket (bucket is public)
-                public = supabase.storage.from_('images').get_public_url(file_key)
-                if isinstance(public, dict):
-                    image_url = (public.get('data') or {}).get('publicUrl') or image_url
-                elif isinstance(public, str):
-                    image_url = public or image_url
+                print("upload_resp:", upload_resp)
+                # If SDK returns dict with error, don't set URL
+                if isinstance(upload_resp, dict) and upload_resp.get('error'):
+                    print("Storage upload error:", upload_resp['error'])
+                else:
+                    public = supabase.storage.from_('images').get_public_url(file_key)
+                    print("public_url_resp:", public)
+                    if isinstance(public, dict):
+                        image_url = (public.get('data') or {}).get('publicUrl') or image_url
+                    elif isinstance(public, str):
+                        image_url = public or image_url
             except Exception as e:
                 print(f"Image upload failed: {e}")
                 # proceed without image
